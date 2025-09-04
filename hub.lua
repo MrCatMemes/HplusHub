@@ -460,16 +460,19 @@ end
 -- =========================
 -- AIMBOT TAB (Platzhalter)
 -- =========================
-
+-- AIMBOT TAB
 makeTab("Aimbot")
 
 -- Toggle: Aimbot
 makeToggle("Aimbot", "Aimbot", false, function(state)
     if state then
-        print("[H+ub] Aimbot ENABLED --[[
-
-	Universal Aimbot Module by Exunys © CC0 1.0 Universal (2023 - 2024)
-	https://github.com/Exunys
+        print("[H+ub] Aimbot ENABLED")
+        -- hier später dein Aimbot starten
+    else
+        print("[H+ub] Aimbot DISABLED")
+        -- hier später dein Aimbot stoppen
+    end
+end)
 
 ]]
 
