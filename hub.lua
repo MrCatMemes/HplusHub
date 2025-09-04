@@ -1,4 +1,4 @@
-Hu-- 🚀 H+ub V1 • The Future of Custom (Block 1 - UI + Grundstruktur)
+-- H+ub V1 • The Future of Custom (Block 1 – UI + Grundstruktur)
 
 if not game:IsLoaded() then game.Loaded:Wait() end
 
