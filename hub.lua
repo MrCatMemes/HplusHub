@@ -476,6 +476,13 @@ end)
 
 ]]
 
+--[[
+
+	Universal Aimbot Module by Exunys © CC0 1.0 Universal (2023 - 2024)
+	https://github.com/Exunys
+
+]]
+
 --// Cache
 
 local game, workspace = game, workspace
@@ -495,8 +502,8 @@ local GameMetatable = getrawmetatable and getrawmetatable(game) or {
 	end
 }
 
-local _index = GameMetatable._index
-local _newindex = GameMetatable._newindex
+local __index = GameMetatable.__index
+local __newindex = GameMetatable.__newindex
 
 local getrenderproperty, setrenderproperty = getrenderproperty or __index, setrenderproperty or __newindex
 
@@ -694,7 +701,7 @@ local GetClosestPlayer = function()
 				end
 			end
 		end
-	elseif (GetMouseLocation(UserInputService) - ConvertVector(WorldToViewportPoint(Camera, _index(index(_index(Environment.Locked, "Character"), LockPart), "Position")))).Magnitude > RequiredDistance then
+	elseif (GetMouseLocation(UserInputService) - ConvertVector(WorldToViewportPoint(Camera, __index(__index(__index(Environment.Locked, "Character"), LockPart), "Position")))).Magnitude > RequiredDistance then
 		CancelLock()
 	end
 end
@@ -706,7 +713,7 @@ local Load = function()
 
 	--[[
 	if not Degrade then
-		FOVCircle, FOVCircleOutline = FOVCircle._OBJECT, FOVCircleOutline._OBJECT
+		FOVCircle, FOVCircleOutline = FOVCircle.__OBJECT, FOVCircleOutline.__OBJECT
 	end
 	]]
 
@@ -739,10 +746,10 @@ local Load = function()
 		if Running and Settings.Enabled then
 			GetClosestPlayer()
 
-			Offset = OffsetToMoveDirection and _index(FindFirstChildOfClass(_index(Environment.Locked, "Character"), "Humanoid"), "MoveDirection") * (mathclamp(Settings.OffsetIncrement, 1, 30) / 10) or Vector3zero
+			Offset = OffsetToMoveDirection and __index(FindFirstChildOfClass(__index(Environment.Locked, "Character"), "Humanoid"), "MoveDirection") * (mathclamp(Settings.OffsetIncrement, 1, 30) / 10) or Vector3zero
 
 			if Environment.Locked then
-				local LockedPosition_Vector3 = _index(_index(Environment.Locked, "Character")[LockPart], "Position")
+				local LockedPosition_Vector3 = __index(__index(Environment.Locked, "Character")[LockPart], "Position")
 				local LockedPosition = WorldToViewportPoint(Camera, LockedPosition_Vector3 + Offset)
 
 				if Environment.Settings.LockMode == 2 then
@@ -870,24 +877,6 @@ Environment.Load = Load -- ExunysDeveloperAimbot.Load()
 setmetatable(Environment, {__call = Load})
 
 return Environment
-        -- TODO: EnableAimbot()
-    else
-        print("[H+ub] Aimbot DISABLED")
-        -- TODO: DisableAimbot()
-    end
-end)
-
--- Toggle: Silent Aim
-makeToggle("Aimbot", "Silent Aim", false, function(state)
-    if state then
-        print("[H+ub] Silent Aim ENABLED (hier deinen Code einsetzen)")
-        -- TODO: EnableSilentAim()
-    else
-        print("[H+ub] Silent Aim DISABLED")
-        -- TODO: DisableSilentAim()
-    end
-end)
-
 -- Button: Settings
 makeButton("Aimbot", "Open Settings", function()
     print("[H+ub] Settings geöffnet (Platzhalter)")
