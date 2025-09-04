@@ -73,101 +73,61 @@ ContentFrame.BorderSizePixel = 0
 ContentFrame.Parent = MainFrame
 
 -- Dictionary für Tabs
+-- Tabs erstellen
+local TabFrame = Instance.new("Frame")
+TabFrame.Name = "TabFrame"
+TabFrame.Size = UDim2.new(0, 150, 1, -40)
+TabFrame.Position = UDim2.new(0, 0, 0, 40)
+TabFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+TabFrame.Parent = MainFrame
+
+local UIListLayout = Instance.new("UIListLayout")
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout.Padding = UDim.new(0, 5)
+UIListLayout.Parent = TabFrame
+
+-- Tab Funktion
 local tabs = {}
+function makeTab(name)
+    local button = Instance.new("TextButton")
+    button.Size = UDim2.new(1, -10, 0, 35)
+    button.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+    button.Text = name
+    button.TextColor3 = Color3.new(1, 1, 1)
+    button.Font = Enum.Font.GothamSemibold
+    button.TextSize = 14
+    button.Parent = TabFrame
 
--- Tab-Erstellung
-local function createTab(name)
-    local TabButton = Instance.new("TextButton")
-    TabButton.Size = UDim2.new(1, 0, 0, 40)
-    TabButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-    TabButton.TextColor3 = Color3.new(1, 1, 1)
-    TabButton.Font = Enum.Font.Gotham
-    TabButton.TextSize = 14
-    TabButton.Text = name
-    TabButton.Parent = TabFrame
+    local page = Instance.new("Frame")
+    page.Size = UDim2.new(1, -160, 1, -50)
+    page.Position = UDim2.new(0, 160, 0, 50)
+    page.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    page.Visible = false
+    page.Parent = MainFrame
 
-    local Page = Instance.new("ScrollingFrame")
-    Page.Size = UDim2.new(1, 0, 1, 0)
-    Page.CanvasSize = UDim2.new(0, 0, 2, 0)
-    Page.ScrollBarThickness = 6
-    Page.Visible = false
-    Page.Parent = ContentFrame
-
-    tabs[name] = {Button = TabButton, Page = Page}
-
-    TabButton.MouseButton1Click:Connect(function()
-        for _, tab in pairs(tabs) do
-            tab.Page.Visible = false
+    button.MouseButton1Click:Connect(function()
+        for _, t in pairs(tabs) do
+            t.Page.Visible = false
         end
-        Page.Visible = true
+        page.Visible = true
     end)
+
+    local tabData = {Button = button, Page = page}
+    tabs[name] = tabData
+    return tabData
 end
 
--- Tabs anlegen
-createTab("Movement")
-createTab("Vehicle")
-createTab("ESP")
-createTab("Teleports")
-createTab("AutoFarm")
-createTab("Misc")
-createTab("Info")
+-- Alle Tabs
+makeTab("Movement")
+makeTab("Vehicle")
+makeTab("ESP")
+makeTab("Teleports")
+makeTab("AutoFarm")
+makeTab("Misc")
+makeTab("Info")
 
--- Standard Tab sichtbar
-tabs["Movement"].Page.Visible = true
-
-print("✅ Block 1 (Grundstruktur + GUI) geladen")  
-
--- Block 2: Movement Features
-
-local function makeButton(tab, text, callback)
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(1, -20, 0, 40)
-    btn.Position = UDim2.new(0, 10, 0, (#tabs[tab].Page:GetChildren()-1) * 45)
-    btn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    btn.TextColor3 = Color3.new(1,1,1)
-    btn.Font = Enum.Font.Gotham
-    btn.TextSize = 14
-    btn.Text = text
-    btn.Parent = tabs[tab].Page
-
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0,8)
-    corner.Parent = btn
-
-    btn.MouseButton1Click:Connect(callback)
-end
-
-local function makeSlider(tab, text, min, max, default, callback)
-    local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(1, -20, 0, 50)
-    frame.Position = UDim2.new(0, 10, 0, (#tabs[tab].Page:GetChildren()-1) * 55)
-    frame.BackgroundColor3 = Color3.fromRGB(40,40,40)
-    frame.Parent = tabs[tab].Page
-
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0,8)
-    corner.Parent = frame
-
-    local label = Instance.new("TextLabel")
-    label.Size = UDim2.new(1, -20, 0, 20)
-    label.Position = UDim2.new(0,10,0,5)
-    label.BackgroundTransparency = 1
-    label.Text = text.." ("..default..")"
-    label.TextColor3 = Color3.new(1,1,1)
-    label.Font = Enum.Font.Gotham
-    label.TextSize = 14
-    label.TextXAlignment = Enum.TextXAlignment.Left
-    label.Parent = frame
-
-    local slider = Instance.new("TextButton")
-    slider.Size = UDim2.new(1,-20,0,15)
-    slider.Position = UDim2.new(0,10,0,30)
-    slider.BackgroundColor3 = Color3.fromRGB(60,60,60)
-    slider.Text = ""
-    slider.Parent = frame
-
-    local fill = Instance.new("Frame")
-    fill.Size = UDim2.new((default-min)/(max-min),0,1,0)
+-- Standard: Info anzeigen
+tabs["Info"].Page.Visible = true
     fill.BackgroundColor3 = Color3.fromRGB(0,170,255)
     fill.Parent = slider
 
