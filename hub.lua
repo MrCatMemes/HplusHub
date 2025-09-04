@@ -1,372 +1,405 @@
--- H+ub V1 • The Future of Custom (Block 1 – UI + Grundstruktur)
+-- H+ub V1 - The Future of Custom
+-- Block 1: Grundstruktur + UI Setup
 
-if not game:IsLoaded() then game.Loaded:Wait() end
+if not game:IsLoaded() then
+    game.Loaded:Wait()
+end
 
+-- Services
 local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
 local UserInputService = game:GetService("UserInputService")
 
--- ScreenGui
-local gui = Instance.new("ScreenGui")
-gui.Name = "HplusUI_"..tostring(math.random(1000,9999))
-gui.ResetOnSpawn = false
-gui.IgnoreGuiInset = true
+-- Lokaler Spieler
+local LocalPlayer = Players.LocalPlayer
+local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 
-local parentGui
-pcall(function() parentGui = game:GetService("CoreGui") end)
-if not parentGui then parentGui = LocalPlayer:WaitForChild("PlayerGui") end
-gui.Parent = parentGui
+-- GUI Hauptobjekt
+local HUI = Instance.new("ScreenGui")
+HUI.Name = "H+ubV1"
+HUI.ResetOnSpawn = false
+HUI.Parent = PlayerGui
 
--- Main Frame
-local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 800, 0, 500)
-frame.Position = UDim2.new(0.5, -400, 0.5, -250)
-frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-frame.Active = true
-frame.Draggable = true
-frame.Parent = gui
-Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
+-- Hauptfenster
+local MainFrame = Instance.new("Frame")
+MainFrame.Name = "MainFrame"
+MainFrame.Size = UDim2.new(0, 800, 0, 500)
+MainFrame.Position = UDim2.new(0.5, -400, 0.5, -250)
+MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+MainFrame.BorderSizePixel = 0
+MainFrame.Active = true
+MainFrame.Draggable = true
+MainFrame.Parent = HUI
+
+-- Abgerundete Ecken
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 12)
+UICorner.Parent = MainFrame
 
 -- Header
-local header = Instance.new("Frame")
-header.Size = UDim2.new(1, 0, 0, 40)
-header.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-header.Parent = frame
-Instance.new("UICorner", header).CornerRadius = UDim.new(0, 12)
+local Header = Instance.new("Frame")
+Header.Name = "Header"
+Header.Size = UDim2.new(1, 0, 0, 40)
+Header.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+Header.BorderSizePixel = 0
+Header.Parent = MainFrame
 
-local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1, -20, 1, 0)
-title.Position = UDim2.new(0, 10, 0, 0)
-title.BackgroundTransparency = 1
-title.Text = "🚀 H+ub V1 • The Future of Custom"
-title.TextColor3 = Color3.new(1, 1, 1)
-title.Font = Enum.Font.GothamBold
-title.TextSize = 18
-title.TextXAlignment = Enum.TextXAlignment.Left
-title.Parent = header
+local HeaderText = Instance.new("TextLabel")
+HeaderText.Size = UDim2.new(1, -20, 1, 0)
+HeaderText.Position = UDim2.new(0, 10, 0, 0)
+HeaderText.BackgroundTransparency = 1
+HeaderText.Text = "🚀 H+ub V1 • The Future of Custom"
+HeaderText.TextColor3 = Color3.new(1, 1, 1)
+HeaderText.Font = Enum.Font.GothamBold
+HeaderText.TextSize = 18
+HeaderText.TextXAlignment = Enum.TextXAlignment.Left
+HeaderText.Parent = Header
 
--- Sidebar
-local sidebar = Instance.new("Frame")
-sidebar.Size = UDim2.new(0, 200, 1, -40)
-sidebar.Position = UDim2.new(0, 0, 0, 40)
-sidebar.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-sidebar.Parent = frame
+-- Tab-Leiste links
+local TabFrame = Instance.new("Frame")
+TabFrame.Name = "TabFrame"
+TabFrame.Size = UDim2.new(0, 150, 1, -40)
+TabFrame.Position = UDim2.new(0, 0, 0, 40)
+TabFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+TabFrame.BorderSizePixel = 0
+TabFrame.Parent = MainFrame
 
-local sideLayout = Instance.new("UIListLayout")
-sideLayout.Padding = UDim.new(0, 5)
-sideLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-sideLayout.Parent = sidebar
+-- Seiteninhalt rechts
+local ContentFrame = Instance.new("Frame")
+ContentFrame.Name = "ContentFrame"
+ContentFrame.Size = UDim2.new(1, -150, 1, -40)
+ContentFrame.Position = UDim2.new(0, 150, 0, 40)
+ContentFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+ContentFrame.BorderSizePixel = 0
+ContentFrame.Parent = MainFrame
 
--- Content Area
-local content = Instance.new("Frame")
-content.Size = UDim2.new(1, -210, 1, -50)
-content.Position = UDim2.new(0, 210, 0, 50)
-content.BackgroundTransparency = 1
-content.Parent = frame
-
--- Tabs
+-- Dictionary für Tabs
 local tabs = {}
-local function makeTab(name)
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(1, -20, 0, 40)
-    btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-    btn.Text = name
-    btn.TextColor3 = Color3.new(1, 1, 1)
-    btn.Font = Enum.Font.GothamSemibold
-    btn.TextSize = 14
-    btn.Parent = sidebar
-    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 8)
 
-    local page = Instance.new("Frame")
-    page.Size = UDim2.new(1, 0, 1, 0)
-    page.BackgroundTransparency = 1
-    page.Visible = false
-    page.Parent = content
+-- Tab-Erstellung
+local function createTab(name)
+    local TabButton = Instance.new("TextButton")
+    TabButton.Size = UDim2.new(1, 0, 0, 40)
+    TabButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    TabButton.TextColor3 = Color3.new(1, 1, 1)
+    TabButton.Font = Enum.Font.Gotham
+    TabButton.TextSize = 14
+    TabButton.Text = name
+    TabButton.Parent = TabFrame
 
-    local layout = Instance.new("UIListLayout")
-    layout.Padding = UDim.new(0, 10)
-    layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-    layout.Parent = page
+    local Page = Instance.new("ScrollingFrame")
+    Page.Size = UDim2.new(1, 0, 1, 0)
+    Page.CanvasSize = UDim2.new(0, 0, 2, 0)
+    Page.ScrollBarThickness = 6
+    Page.Visible = false
+    Page.Parent = ContentFrame
 
-    tabs[name] = {Button = btn, Page = page}
+    tabs[name] = {Button = TabButton, Page = Page}
 
-    btn.MouseButton1Click:Connect(function()
-        for _, t in pairs(tabs) do
-            t.Page.Visible = false
-            t.Button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    TabButton.MouseButton1Click:Connect(function()
+        for _, tab in pairs(tabs) do
+            tab.Page.Visible = false
         end
-        page.Visible = true
-        btn.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
+        Page.Visible = true
     end)
 end
 
--- Create Tabs
-makeTab("Movement")
-makeTab("Vehicle")
-makeTab("ESP")
-makeTab("Teleports")
-makeTab("AutoFarm")
-makeTab("Misc")
-makeTab("Info")
+-- Tabs anlegen
+createTab("Movement")
+createTab("Vehicle")
+createTab("ESP")
+createTab("Teleports")
+createTab("AutoFarm")
+createTab("Misc")
+createTab("Info")
 
--- Helper: Button
-local function makeButton(tabName, text, callback)
+-- Standard Tab sichtbar
+tabs["Movement"].Page.Visible = true
+
+print("✅ Block 1 (Grundstruktur + GUI) geladen")  
+
+-- Block 2: Movement Features
+
+local function makeButton(tab, text, callback)
     local btn = Instance.new("TextButton")
     btn.Size = UDim2.new(1, -20, 0, 40)
+    btn.Position = UDim2.new(0, 10, 0, (#tabs[tab].Page:GetChildren()-1) * 45)
     btn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    btn.TextColor3 = Color3.new(1,1,1)
+    btn.Font = Enum.Font.Gotham
+    btn.TextSize = 14
     btn.Text = text
-    btn.TextColor3 = Color3.new(1, 1, 1)
-    btn.Font = Enum.Font.GothamSemibold
-    btn.TextSize = 14
-    btn.Parent = tabs[tabName].Page
-    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 8)
+    btn.Parent = tabs[tab].Page
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0,8)
+    corner.Parent = btn
+
     btn.MouseButton1Click:Connect(callback)
-    return btn
 end
 
--- Helper: Toggle
-local function makeToggle(tabName, text, default, callback)
-    local state = default or false
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(1, -20, 0, 40)
-    btn.BackgroundColor3 = state and Color3.fromRGB(0, 170, 0) or Color3.fromRGB(50, 50, 50)
-    btn.Text = text.." ["..(state and "ON" or "OFF").."]"
-    btn.TextColor3 = Color3.new(1, 1, 1)
-    btn.Font = Enum.Font.GothamSemibold
-    btn.TextSize = 14
-    btn.Parent = tabs[tabName].Page
-    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 8)
+local function makeSlider(tab, text, min, max, default, callback)
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(1, -20, 0, 50)
+    frame.Position = UDim2.new(0, 10, 0, (#tabs[tab].Page:GetChildren()-1) * 55)
+    frame.BackgroundColor3 = Color3.fromRGB(40,40,40)
+    frame.Parent = tabs[tab].Page
 
-    btn.MouseButton1Click:Connect(function()
-        state = not state
-        btn.Text = text.." ["..(state and "ON" or "OFF").."]"
-        btn.BackgroundColor3 = state and Color3.fromRGB(0, 170, 0) or Color3.fromRGB(50, 50, 50)
-        callback(state)
-    end)
-
-    return btn, function() return state end
-end
-
--- Helper: Slider
-local function makeSlider(tabName, text, min, max, default, callback)
-    local value = default or min
-
-    local holder = Instance.new("Frame")
-    holder.Size = UDim2.new(1, -20, 0, 60)
-    holder.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    holder.Parent = tabs[tabName].Page
-    Instance.new("UICorner", holder).CornerRadius = UDim.new(0, 8)
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0,8)
+    corner.Parent = frame
 
     local label = Instance.new("TextLabel")
     label.Size = UDim2.new(1, -20, 0, 20)
-    label.Position = UDim2.new(0, 10, 0, 5)
+    label.Position = UDim2.new(0,10,0,5)
     label.BackgroundTransparency = 1
-    label.Text = text..": "..tostring(value)
-    label.TextColor3 = Color3.new(1, 1, 1)
-    label.Font = Enum.Font.GothamSemibold
+    label.Text = text.." ("..default..")"
+    label.TextColor3 = Color3.new(1,1,1)
+    label.Font = Enum.Font.Gotham
     label.TextSize = 14
-    label.Parent = holder
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.Parent = frame
 
-    local bar = Instance.new("Frame")
-    bar.Size = UDim2.new(1, -20, 0, 10)
-    bar.Position = UDim2.new(0, 10, 0, 35)
-    bar.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
-    bar.Parent = holder
+    local slider = Instance.new("TextButton")
+    slider.Size = UDim2.new(1,-20,0,15)
+    slider.Position = UDim2.new(0,10,0,30)
+    slider.BackgroundColor3 = Color3.fromRGB(60,60,60)
+    slider.Text = ""
+    slider.Parent = frame
 
     local fill = Instance.new("Frame")
-    fill.Size = UDim2.new((value-min)/(max-min), 0, 1, 0)
-    fill.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
-    fill.Parent = bar
+    fill.Size = UDim2.new((default-min)/(max-min),0,1,0)
+    fill.BackgroundColor3 = Color3.fromRGB(0,170,255)
+    fill.Parent = slider
 
     local dragging = false
-    bar.InputBegan:Connect(function(input)
+    slider.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             dragging = true
         end
     end)
-    bar.InputEnded:Connect(function(input)
+    slider.InputEnded:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             dragging = false
         end
     end)
-
     UserInputService.InputChanged:Connect(function(input)
         if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-            local pos = math.clamp((input.Position.X - bar.AbsolutePosition.X) / bar.AbsoluteSize.X, 0, 1)
-            value = math.floor(min + (max-min)*pos)
-            fill.Size = UDim2.new(pos, 0, 1, 0)
-            label.Text = text..": "..tostring(value)
-            callback(value)
+            local rel = math.clamp((input.Position.X - slider.AbsolutePosition.X) / slider.AbsoluteSize.X,0,1)
+            fill.Size = UDim2.new(rel,0,1,0)
+            local val = math.floor(min + (max-min)*rel)
+            label.Text = text.." ("..val..")"
+            callback(val)
         end
     end)
-
-    return holder, function() return value end
 end
 
--- Default Tab sichtbar machen
-tabs["Movement"].Page.Visible = true
-tabs["Movement"].Button.BackgroundColor3 = Color3.fromRGB(55,55,55)
-
-print("✅ Block 1 (UI System + Grundstruktur) geladen") 
-
--- 🚀 H+ub V1 (Block 2 - Movement Tab)
+-- Variablen für Movement
+local WalkSpeed = 16
+local FlyEnabled = false
+local NoClipEnabled = false
+local InfJumpEnabled = false
 
 -- Speed Slider
-makeSlider("Movement", "WalkSpeed", 16, 200, 16, function(value)
-    print("[H+ub] WalkSpeed Slider auf: "..value)
+makeSlider("Movement","WalkSpeed",16,200,16,function(val)
+    WalkSpeed = val
+    LocalPlayer.Character.Humanoid.WalkSpeed = val
 end)
 
--- Infinite Jump Toggle
-makeToggle("Movement", "Infinite Jump", false, function(state)
-    print("[H+ub] Infinite Jump: "..tostring(state))
+-- Fly Button
+makeButton("Movement","Toggle Fly",function()
+    FlyEnabled = not FlyEnabled
+    print("[H+ub] Fly:",FlyEnabled)
+    if FlyEnabled then
+        local char = LocalPlayer.Character
+        local hum = char:FindFirstChildOfClass("Humanoid")
+        hum:ChangeState(Enum.HumanoidStateType.Physics)
+        char.PrimaryPart.Anchored = false
+        game:GetService("RunService").RenderStepped:Connect(function()
+            if FlyEnabled and char.PrimaryPart then
+                char.PrimaryPart.Velocity = Vector3.new(0,50,0)
+            end
+        end)
+    end
 end)
 
--- Fly Toggle
-makeToggle("Movement", "Fly", false, function(state)
-    print("[H+ub] Fly: "..tostring(state))
+-- Noclip Button
+makeButton("Movement","Toggle Noclip",function()
+    NoClipEnabled = not NoClipEnabled
+    print("[H+ub] Noclip:",NoClipEnabled)
+    game:GetService("RunService").Stepped:Connect(function()
+        if NoClipEnabled and LocalPlayer.Character then
+            for _,part in pairs(LocalPlayer.Character:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    part.CanCollide = false
+                end
+            end
+        end
+    end)
 end)
 
--- Fly Speed Slider
-makeSlider("Movement", "Fly Speed", 10, 200, 50, function(value)
-    print("[H+ub] Fly Speed Slider auf: "..value)
+-- Infinite Jump Button
+makeButton("Movement","Toggle Infinite Jump",function()
+    InfJumpEnabled = not InfJumpEnabled
+    print("[H+ub] Infinite Jump:",InfJumpEnabled)
 end)
 
--- Noclip Toggle
-makeToggle("Movement", "Noclip", false, function(state)
-    print("[H+ub] Noclip: "..tostring(state))
+UserInputService.JumpRequest:Connect(function()
+    if InfJumpEnabled and LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid") then
+        LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping")
+    end
 end)
 
--- Escape Car Button
-makeButton("Movement", "Escape Car", function()
-    print("[H+ub] Escape Car gedrückt")
-end)
+print("✅ Block 2 (Movement) geladen")  
 
-print("✅ Block 2 (Movement Tab) geladen")  
+-- Block 3: Vehicle Features
 
--- 🚀 H+ub V1 (Block 3 - Vehicle Tab)
+local CarFlyEnabled = false
+local CarFlySpeed = 50
 
 -- Car Fly Toggle
-makeToggle("Vehicle", "Car Fly", false, function(state)
-    print("[H+ub] Car Fly: "..tostring(state))
+makeButton("Vehicle","Toggle Car Fly",function()
+    CarFlyEnabled = not CarFlyEnabled
+    print("[H+ub] Car Fly:",CarFlyEnabled)
 end)
 
 -- Car Fly Speed Slider
-makeSlider("Vehicle", "Car Fly Speed", 50, 500, 150, function(value)
-    print("[H+ub] Car Fly Speed Slider auf: "..value)
+makeSlider("Vehicle","Car Fly Speed",10,200,50,function(val)
+    CarFlySpeed = val
 end)
 
--- Infinite Fuel Toggle
-makeToggle("Vehicle", "Infinite Fuel", false, function(state)
-    print("[H+ub] Infinite Fuel: "..tostring(state))
+-- Car Fly Keybind (Taste X)
+UserInputService.InputBegan:Connect(function(input,gp)
+    if gp then return end
+    if input.KeyCode == Enum.KeyCode.X then
+        CarFlyEnabled = not CarFlyEnabled
+        print("[H+ub] Hotkey X → Car Fly:",CarFlyEnabled)
+    end
 end)
 
--- God Car Toggle
-makeToggle("Vehicle", "God Car", false, function(state)
-    print("[H+ub] God Car: "..tostring(state))
+-- Car Fly Logic
+game:GetService("RunService").RenderStepped:Connect(function()
+    if CarFlyEnabled and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+        local seat = LocalPlayer.Character:FindFirstChildWhichIsA("VehicleSeat") or LocalPlayer.Character:FindFirstChildWhichIsA("Seat")
+        if seat and seat:IsDescendantOf(workspace) then
+            seat.Velocity = LocalPlayer.Character.Humanoid.MoveDirection * CarFlySpeed + Vector3.new(0,CarFlySpeed/2,0)
+        end
+    end
 end)
 
-print("✅ Block 3 (Vehicle Tab) geladen")  
+-- GodCar Button
+makeButton("Vehicle","GodCar",function()
+    print("[H+ub] GodCar aktiviert")
+    local seat = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildWhichIsA("VehicleSeat")
+    if seat and seat.Parent then
+        for _,part in pairs(seat.Parent:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.Anchored = false
+                part.CanCollide = true
+                part.AssemblyLinearVelocity = Vector3.zero
+            end
+        end
+    end
+end)
 
-Hu-- 🚀 H+ub V1 (Block 4 - ESP Tab)
+-- Infinite Fuel Button
+makeButton("Vehicle","Infinite Fuel",function()
+    print("[H+ub] Infinite Fuel aktiviert")
+    -- Platzhalter: Hier könntest du Vehicle Fuel-Werte patchen
+end)
+
+print("✅ Block 3 (Vehicle) geladen")  
+
+-- Block 4: ESP Features
+
+local NameESP = false
+local DistanceESP = false
+local TeamESP = false
+local WantedESP = false
 
 -- Name ESP Toggle
-makeToggle("ESP", "Name ESP", false, function(state)
-    print("[H+ub] Name ESP: "..tostring(state))
+makeButton("ESP","Toggle Name ESP",function()
+    NameESP = not NameESP
+    print("[H+ub] Name ESP:",NameESP)
 end)
 
 -- Distance ESP Toggle
-makeToggle("ESP", "Distance ESP", false, function(state)
-    print("[H+ub] Distance ESP: "..tostring(state))
+makeButton("ESP","Toggle Distance ESP",function()
+    DistanceESP = not DistanceESP
+    print("[H+ub] Distance ESP:",DistanceESP)
 end)
 
 -- Team ESP Toggle
-makeToggle("ESP", "Team ESP", false, function(state)
-    print("[H+ub] Team ESP: "..tostring(state))
+makeButton("ESP","Toggle Team ESP",function()
+    TeamESP = not TeamESP
+    print("[H+ub] Team ESP:",TeamESP)
 end)
 
 -- Wanted ESP Toggle
-makeToggle("ESP", "Wanted ESP", false, function(state)
-    print("[H+ub] Wanted ESP: "..tostring(state))
+makeButton("ESP","Toggle Wanted ESP",function()
+    WantedESP = not WantedESP
+    print("[H+ub] Wanted ESP:",WantedESP)
 end)
 
-print("✅ Block 4 (ESP Tab) geladen")  
+print("✅ Block 4 (ESP) geladen")  
 
--- 🚀 H+ub V1 (Block 5 - Teleports + AutoFarm Tabs)
+-- Block 5: Teleports + AutoFarm
 
--- TELEPORTS TAB
-
--- Save Position Button
-makeButton("Teleports", "Save Position", function()
+-- TELEPORTS
+makeButton("Teleports","Save Position",function()
     print("[H+ub] Save Position gedrückt")
 end)
 
--- Load Position Button
-makeButton("Teleports", "Load Position", function()
+makeButton("Teleports","Load Position",function()
     print("[H+ub] Load Position gedrückt")
 end)
 
--- Example Locations (z. B. Police Station, Hospital, Bank)
-makeButton("Teleports", "Teleport: Police Station", function()
+makeButton("Teleports","Teleport: Police Station",function()
     print("[H+ub] Teleport Police Station gedrückt")
 end)
 
-makeButton("Teleports", "Teleport: Hospital", function()
+makeButton("Teleports","Teleport: Hospital",function()
     print("[H+ub] Teleport Hospital gedrückt")
 end)
 
-makeButton("Teleports", "Teleport: Bank", function()
+makeButton("Teleports","Teleport: Bank",function()
     print("[H+ub] Teleport Bank gedrückt")
 end)
 
-
--- AUTOFARM TAB
-
--- Bus Farm Button
-makeButton("AutoFarm", "Start Bus Farm", function()
+-- AUTOFARM
+makeButton("AutoFarm","Start Bus Farm",function()
     print("[H+ub] Bus Farm gestartet")
 end)
 
--- Truck Farm Button
-makeButton("AutoFarm", "Start Truck Farm", function()
+makeButton("AutoFarm","Start Truck Farm",function()
     print("[H+ub] Truck Farm gestartet")
 end)
 
--- Radar Farm Button
-makeButton("AutoFarm", "Start Radar Farm", function()
+makeButton("AutoFarm","Start Radar Farm",function()
     print("[H+ub] Radar Farm gestartet")
 end)
 
--- 🔥 BLOCK 5: Misc Tab Features
+print("✅ Block 5 (Teleports + AutoFarm) geladen")  
 
--- Easy Arrest Button
-makeButton("Misc", "Easy Arrest", function()
-    print("[H+ub] Easy Arrest gedrückt")
-end)
+-- Block 6: Misc + Info + Hotkeys
 
--- Anti Taser
-makeButton("Misc", "Anti Taser", function()
+-- MISC TAB
+makeButton("Misc","Anti Taser",function()
     print("[H+ub] Anti Taser aktiviert")
 end)
 
--- Anti Fall
-makeButton("Misc", "Anti Fall", function()
+makeButton("Misc","Anti Fall",function()
     print("[H+ub] Anti Fall aktiviert")
 end)
 
--- Anti Downed
-makeButton("Misc", "Anti Downed", function()
-    print("[H+ub] Anti Downed aktiviert")
+makeButton("Misc","Infinite Stamina",function()
+    print("[H+ub] Infinite Stamina aktiviert")
 end)
 
--- Anti Dying
-makeButton("Misc", "Anti Dying", function()
-    print("[H+ub] Anti Dying aktiviert")
+makeButton("Misc","Easy Arrest",function()
+    print("[H+ub] Easy Arrest gedrückt")
 end)
 
-
--- 🔥 BLOCK 6: Info Tab + Hotkeys
-
--- Info Tab
+-- INFO TAB
 local infoLabel = Instance.new("TextLabel")
 infoLabel.Size = UDim2.new(1, -20, 0, 40)
 infoLabel.Position = UDim2.new(0, 10, 0, 10)
@@ -378,7 +411,7 @@ infoLabel.TextSize = 16
 infoLabel.TextXAlignment = Enum.TextXAlignment.Left
 infoLabel.Parent = tabs["Info"].Page
 
--- Hotkeys Setup
+-- HOTKEYS
 UserInputService.InputBegan:Connect(function(input, gp)
     if gp then return end
     if input.KeyCode == Enum.KeyCode.F then
@@ -392,6 +425,5 @@ UserInputService.InputBegan:Connect(function(input, gp)
     end
 end)
 
-print("✅ Block 5 (Misc Features) geladen")
-print("✅ Block 6 (Info + Hotkeys) geladen")
+print("✅ Block 6 (Misc + Info + Hotkeys) geladen")
 print("🔥 H+ub V1 vollständig geladen – Nova-Style UI komplett!")
