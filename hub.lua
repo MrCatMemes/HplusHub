@@ -431,4 +431,39 @@ UserInputService.InputBegan:Connect(function(input, gp)
 end)
 
 print("✅ Block 6 geladen (Misc + Info + Hotkeys)")
-print("🔥 H+ub V1 vollständig geladen – alle Tabs aktiv!")
+print("🔥 H+ub V1 vollständig geladen – alle Tabs aktiv!")  
+
+-- Block: Aimbot Tab (Platzhalter für Exunys oder eigenen Code)
+
+-- Tab erstellen
+makeTab("Aimbot")
+
+-- Toggle: Aimbot
+makeToggle("Aimbot", "Aimbot", false, function(state)
+    if state then
+        print("[H+ub] Aimbot ENABLED (hier deinen Code einsetzen)")
+        -- TODO: Hier deine EnableAimbot() Funktion einfügen
+    else
+        print("[H+ub] Aimbot DISABLED")
+        -- TODO: Hier deine DisableAimbot() oder Cleanup einfügen
+    end
+end)
+
+-- Toggle: Silent Aim
+makeToggle("Aimbot", "Silent Aim", false, function(state)
+    if state then
+        print("[H+ub] Silent Aim ENABLED (hier deinen Code einsetzen)")
+        -- TODO: EnableSilentAim()
+    else
+        print("[H+ub] Silent Aim DISABLED")
+        -- TODO: DisableSilentAim()
+    end
+end)
+
+-- Button: Settings
+makeButton("Aimbot", "Open Settings", function()
+    print("[H+ub] Settings geöffnet (Platzhalter)")
+    -- TODO: Hier kannst du später ein extra Fenster für Aimbot-Settings bauen
+end)
+
+print("✅ Block: Aimbot Tab geladen (Platzhalter UI erstellt)")
