@@ -336,46 +336,49 @@ makeButton("AutoFarm", "Start Radar Farm", function()
     print("[H+ub] Radar Farm gestartet")
 end)
 
-print("✅ Block 5 (Teleports + AutoFarm Tabs) geladen")  
-
--- 🚀 H+ub V1 (Block 6 - Misc + Info + Hotkeys)
-
--- MISC TAB
-
--- Anti Taser Toggle
-makeToggle("Misc", "Anti Taser", false, function(state)
-    print("[H+ub] Anti Taser: "..tostring(state))
-end)
-
--- Anti Fall Toggle
-makeToggle("Misc", "Anti Fall", false, function(state)
-    print("[H+ub] Anti Fall: "..tostring(state))
-end)
-
--- Infinite Stamina Toggle
-makeToggle("Misc", "Infinite Stamina", false, function(state)
-    print("[H+ub] Infinite Stamina: "..tostring(state))
-end)
+-- 🔥 BLOCK 5: Misc Tab Features
 
 -- Easy Arrest Button
 makeButton("Misc", "Easy Arrest", function()
     print("[H+ub] Easy Arrest gedrückt")
 end)
 
+-- Anti Taser
+makeButton("Misc", "Anti Taser", function()
+    print("[H+ub] Anti Taser aktiviert")
+end)
 
--- INFO TAB
+-- Anti Fall
+makeButton("Misc", "Anti Fall", function()
+    print("[H+ub] Anti Fall aktiviert")
+end)
 
+-- Anti Downed
+makeButton("Misc", "Anti Downed", function()
+    print("[H+ub] Anti Downed aktiviert")
+end)
+
+-- Anti Dying
+makeButton("Misc", "Anti Dying", function()
+    print("[H+ub] Anti Dying aktiviert")
+end)
+
+
+-- 🔥 BLOCK 6: Info Tab + Hotkeys
+
+-- Info Tab
 local infoLabel = Instance.new("TextLabel")
 infoLabel.Size = UDim2.new(1, -20, 0, 40)
+infoLabel.Position = UDim2.new(0, 10, 0, 10)
 infoLabel.BackgroundTransparency = 1
-infoLabel.Text = "🚀 H+ub V1 • 2025"
+infoLabel.Text = "🚀 H+ub V1 • 2025 • The Future of Custom"
 infoLabel.TextColor3 = Color3.new(1, 1, 1)
 infoLabel.Font = Enum.Font.GothamSemibold
 infoLabel.TextSize = 16
+infoLabel.TextXAlignment = Enum.TextXAlignment.Left
 infoLabel.Parent = tabs["Info"].Page
 
-
--- HOTKEYS
+-- Hotkeys Setup
 UserInputService.InputBegan:Connect(function(input, gp)
     if gp then return end
     if input.KeyCode == Enum.KeyCode.F then
@@ -389,5 +392,6 @@ UserInputService.InputBegan:Connect(function(input, gp)
     end
 end)
 
-print("✅ Block 6 (Misc + Info + Hotkeys) geladen")
+print("✅ Block 5 (Misc Features) geladen")
+print("✅ Block 6 (Info + Hotkeys) geladen")
 print("🔥 H+ub V1 vollständig geladen – Nova-Style UI komplett!")
